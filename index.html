@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atelier NGS - Institut Pasteur du Maroc</title>
+    
+    <!-- Intégration de Tailwind CSS pour le style -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Polices Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icônes FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#0d3b66',
+                            light: '#e0e7ff',
+                            accent: '#3b82f6',
+                            gray: '#f3f4f6',
+                            dark: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Ajustement pour la barre de navigation fixe lors du scroll fluide */
+        html {
+            scroll-padding-top: 5rem; 
+        }
+        
+        /* Classes pour l'animation au défilement (gérées par IntersectionObserver) */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, visibility;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* Transition fluide pour l'accordéon */
+        .accordion-content {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 500px; /* Valeur arbitraire grande pour permettre le contenu */
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-brand-gray text-gray-800 font-sans antialiased selection:bg-brand-accent selection:text-white">
+
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm shadow-md transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center gap-3 group">
+                        <div class="w-10 h-10 bg-brand-blue rounded-lg flex items-center justify-center text-white shadow-lg group-hover:bg-brand-accent transition-colors">
+                            <i class="fa-solid fa-dna text-xl"></i>
+                        </div>
+                        <div>
+                            <span class="block text-xl font-bold text-brand-blue leading-tight group-hover:text-brand-accent transition-colors">Atelier NGS</span>
+                            <span class="block text-xs font-semibold text-gray-500 uppercase tracking-widest">Institut Pasteur du Maroc</span>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#accueil" class="text-gray-600 hover:text-brand-accent font-medium transition-colors">Accueil</a>
+                    <a href="#apropos" class="text-gray-600 hover:text-brand-accent font-medium transition-colors">À propos</a>
+                    <a href="#programme" class="text-gray-600 hover:text-brand-accent font-medium transition-colors">Programme</a>
+                    <a href="#intervenants" class="text-gray-600 hover:text-brand-accent font-medium transition-colors">Intervenants</a>
+                    <a href="#contact" class="px-5 py-2.5 bg-brand-blue text-white rounded-full font-medium hover:bg-brand-accent transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">S'inscrire</a>
+                </div>
+
+                <!-- Bouton Menu Mobile -->
+                <div class="flex items-center md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-brand-blue focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#accueil" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-accent hover:bg-brand-light">Accueil</a>
+                <a href="#apropos" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-accent hover:bg-brand-light">À propos</a>
+                <a href="#programme" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-accent hover:bg-brand-light">Programme</a>
+                <a href="#intervenants" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-brand-accent hover:bg-brand-light">Intervenants</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="accueil" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-brand-dark">
+        <!-- Fond décoratif (ADN abstrait ou motif géométrique) -->
+        <div class="absolute inset-0 opacity-20">
+            <svg class="absolute h-full w-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <polygon fill="currentColor" class="text-brand-blue" points="0,100 100,0 100,100"/>
+            </svg>
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-transparent"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="fade-in-section">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/20 text-blue-300 font-semibold text-sm mb-6 border border-brand-accent/30">
+                        <i class="fa-regular fa-calendar"></i> Du 09 au 12 novembre 2026 • 4 jours
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-6 tracking-tight">
+                        Atelier d'Analyse des <span class="text-brand-accent">Données de Séquençage</span> à Haut Débit
+                    </h1>
+                    <p class="text-xl text-gray-300 mb-2 font-medium">Institut Pasteur du Maroc</p>
+                    <p class="text-gray-400 mb-8 leading-relaxed max-w-xl">
+                        Le séquençage à haut débit (NGS) a profondément transformé la recherche biomédicale. Cet atelier propose une formation pratique et progressive, allant de Linux jusqu'à l'analyse avancée de données génomiques.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#programme" class="px-8 py-4 bg-brand-accent text-white rounded-lg font-bold text-center hover:bg-blue-600 transition-colors shadow-lg shadow-blue-500/30">
+                            Découvrir le programme
+                        </a>
+                        <a href="#apropos" class="px-8 py-4 bg-white/10 text-white border border-white/20 rounded-lg font-bold text-center hover:bg-white/20 transition-colors backdrop-blur-sm">
+                            En savoir plus
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="hidden lg:block fade-in-section" style="transition-delay: 0.2s;">
+                    <div class="relative w-full aspect-square max-w-md mx-auto">
+                        <div class="absolute inset-0 bg-brand-blue rounded-full opacity-20 blur-3xl mix-blend-screen animate-pulse"></div>
+                        <div class="relative h-full w-full bg-[#1c2938]/40 border border-white/10 rounded-2xl p-2 backdrop-blur-md shadow-2xl flex items-center justify-center overflow-hidden">
+                            <img src="image_header.jpeg" alt="Illustration Génomique et Bioinformatique" class="w-full h-full object-cover rounded-xl shadow-inner transition-transform duration-700 hover:scale-105">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="apropos" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-blue mb-4">À propos de la formation</h2>
+                <div class="h-1 w-20 bg-brand-accent mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 text-lg">Une immersion complète pour maîtriser les outils bioinformatiques indispensables à l'analyse des données NGS modernes.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Objectifs -->
+                <div class="fade-in-section bg-brand-gray p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-light rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-brand-accent text-2xl mb-6 relative z-10">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-4 relative z-10">Objectifs visés</h3>
+                    <ul class="space-y-3 text-gray-600 relative z-10">
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-brand-accent mt-1"></i> <span>Utiliser Linux et comprendre le NGS.</span></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-brand-accent mt-1"></i> <span>Mettre en œuvre un pipeline d'analyse complet.</span></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-check text-brand-accent mt-1"></i> <span>Annoter des variants et assembler des génomes.</span></li>
+                    </ul>
+                </div>
+
+                <!-- Public -->
+                <div class="fade-in-section bg-brand-gray p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative overflow-hidden group" style="transition-delay: 0.1s;">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-brand-light rounded-bl-full -mr-4 -mt-4 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div class="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-brand-accent text-2xl mb-6 relative z-10">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-4 relative z-10">Public cible</h3>
+                    <p class="text-gray-600 mb-4 relative z-10">Ce programme intensif s'adresse spécifiquement aux :</p>
+                    <ul class="space-y-2 text-gray-600 relative z-10">
+                        <li class="flex gap-2 items-center"><div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div> Médecins et pharmaciens</li>
+                        <li class="flex gap-2 items-center"><div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div> Chercheurs et ingénieurs</li>
+                        <li class="flex gap-2 items-center"><div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div> Professionnels de santé publique</li>
+                        <li class="flex gap-2 items-center"><div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div> Étudiants chercheurs</li>
+                    </ul>
+                </div>
+
+                <!-- Prérequis -->
+                <div class="fade-in-section bg-brand-blue p-8 rounded-2xl shadow-lg relative overflow-hidden text-white group" style="transition-delay: 0.2s;">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-bl-full -mr-8 -mt-8 group-hover:scale-110 transition-transform"></div>
+                    <div class="w-14 h-14 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20 flex items-center justify-center text-white text-2xl mb-6 relative z-10">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 relative z-10">Prérequis</h3>
+                    <p class="text-blue-100 mb-4 relative z-10">Pour tirer le meilleur parti de cette formation, quelques bases sont recommandées :</p>
+                    <div class="bg-black/20 p-4 rounded-lg relative z-10 border border-white/10">
+                        <p class="text-sm font-medium"><i class="fa-solid fa-triangle-exclamation text-yellow-400 mr-2"></i> Notions en biologie moléculaire exigées.</p>
+                        <p class="text-sm font-medium mt-2"><i class="fa-solid fa-terminal text-green-400 mr-2"></i> Maîtrise de base de Linux recommandée.</p>
+                    </div>
+                    <p class="text-sm text-blue-200 mt-4 relative z-10 italic">Note : Aucune expérience avancée en bioinformatique n'est requise.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="programme" class="py-24 bg-brand-gray relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-blue mb-4">Programme Détaillé</h2>
+                <div class="h-1 w-20 bg-brand-accent mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 text-lg">Un parcours de 4 jours structuré pour une progression optimale des compétences.</p>
+            </div>
+
+            <div class="space-y-4 fade-in-section">
+                
+                <!-- Accordéon Jour 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-header w-full flex justify-between items-center p-6 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-brand-light text-brand-accent flex items-center justify-center font-bold text-lg">J1</div>
+                            <h3 class="text-lg font-bold text-gray-800 text-left">Introduction & Principes de base</h3>
+                        </div>
+                        <i class="icon fa-solid fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-6 pt-0 border-t border-gray-100 text-gray-600 bg-gray-50">
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-sun text-orange-400"></i> Matin</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Introduction à Linux : Commandes de base, navigation, gestion des fichiers et de l'environnement.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-moon text-indigo-400"></i> Après-midi</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Scripting bash et introduction aux principes fondamentaux du séquençage à haut débit (NGS).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordéon Jour 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-header w-full flex justify-between items-center p-6 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-brand-light text-brand-accent flex items-center justify-center font-bold text-lg">J2</div>
+                            <h3 class="text-lg font-bold text-gray-800 text-left">Contrôle Qualité et Alignement</h3>
+                        </div>
+                        <i class="icon fa-solid fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-6 pt-0 border-t border-gray-100 text-gray-600 bg-gray-50">
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-sun text-orange-400"></i> Matin</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Contrôle qualité des données brutes (FastQC) et nettoyage/trimming des séquences.</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-moon text-indigo-400"></i> Après-midi</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Alignement sur génome de référence</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordéon Jour 3 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-header w-full flex justify-between items-center p-6 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-brand-light text-brand-accent flex items-center justify-center font-bold text-lg">J3</div>
+                            <h3 class="text-lg font-bold text-gray-800 text-left">Variant Calling et Annotation</h3>
+                        </div>
+                        <i class="icon fa-solid fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-6 pt-0 border-t border-gray-100 text-gray-600 bg-gray-50">
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-sun text-orange-400"></i> Matin</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Variant calling des mutations germinales (GATK).</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-moon text-indigo-400"></i> Après-midi</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Annotation fonctionnelle et priorisation des variants génétiques.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordéon Jour 4 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <button class="accordion-header w-full flex justify-between items-center p-6 bg-white hover:bg-gray-50 focus:outline-none transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-brand-light text-brand-accent flex items-center justify-center font-bold text-lg">J4</div>
+                            <h3 class="text-lg font-bold text-gray-800 text-left">Méthodes et outils pour l'assemblage de novo de génomes</h3>
+                        </div>
+                        <i class="icon fa-solid fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="p-6 pt-0 border-t border-gray-100 text-gray-600 bg-gray-50">
+                            <div class="mb-4">
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-sun text-orange-400"></i> Matin</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Méthodes d'assemblage de génomes (assemblage de novo, SPAdes).</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-brand-blue mb-1 flex items-center gap-2"><i class="fa-regular fa-moon text-indigo-400"></i> Après-midi</h4>
+                                <p class="pl-6 border-l-2 border-gray-200">Annotation génomique structurale et recherche de gènes de résistance (antibiotiques/virulence).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="intervenants" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-in-section">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-blue mb-4">Équipe Pédagogique</h2>
+                <div class="h-1 w-20 bg-brand-accent mx-auto rounded-full mb-6"></div>
+                <p class="text-gray-600 text-lg">Des experts reconnus en bioinformatique et génomique pour vous accompagner tout au long de la formation.</p>
+            </div>
+
+            <!-- Grille des Intervenants -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                
+                <!-- Carte 1 -->
+                <div class="fade-in-section bg-white rounded-2xl p-8 border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 text-center group">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-brand-light flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user text-4xl text-brand-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-1">Dr. Hicham Charoute</h3>
+                    <div class="w-10 h-1 bg-brand-accent mx-auto rounded-full mb-4 opacity-50"></div>
+                    <p class="text-gray-600 text-sm">Unité d’Épidémiologie, Biostatistique et Bioiformatique, Institut Pasteur du Maroc.</p>
+                </div>
+
+                <!-- Carte 2 -->
+                <div class="fade-in-section bg-white rounded-2xl p-8 border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 text-center group" style="transition-delay: 0.1s;">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-brand-light flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user text-4xl text-brand-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-1">Dr. Salaheddine Redouane</h3>
+                    <div class="w-10 h-1 bg-brand-accent mx-auto rounded-full mb-4 opacity-50"></div>
+                    <p class="text-gray-600 text-sm">Centre de Séquençage Génomique, Institut Pasteur du Maroc</p>
+                </div>
+
+                <!-- Carte 3 -->
+                <div class="fade-in-section bg-white rounded-2xl p-8 border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 text-center group" style="transition-delay: 0.2s;">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-brand-light flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user text-4xl text-brand-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-1">Amine Aiddi (doctorant)</h3>
+                    <div class="w-10 h-1 bg-brand-accent mx-auto rounded-full mb-4 opacity-50"></div>
+                    <p class="text-gray-600 text-sm">Laboratoire de Bactériologie Moléculaire, Institut Pasteur du Maroc.</p>
+                </div>
+                <!-- Carte 4 -->
+                <div class="fade-in-section  md:col-start-2 bg-white rounded-2xl p-8 border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300 text-center group" style="transition-delay: 0.2s;">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-brand-light flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user text-4xl text-brand-accent"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-dark mb-1">Pr. Badreddine Nouadi</h3>
+                    <div class="w-10 h-1 bg-brand-accent mx-auto rounded-full mb-4 opacity-50"></div>
+                    <p class="text-gray-600 text-sm">Institut Supérieur des Professions Infirmières et Techniques de Santé de Safi</p>
+                </div>
+            </div>
+
+            <!-- Comité d'organisation -->
+            <div class="bg-brand-gray rounded-2xl p-8 md:p-10 border border-gray-200 fade-in-section">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="md:w-1/3 text-center md:text-left">
+                        <h3 class="text-2xl font-bold text-brand-blue mb-2">Comité d'organisation</h3>
+                        <p class="text-gray-600 text-sm">Institut Pasteur du Maroc</p>
+                    </div>
+                    <div class="md:w-3/3 w-full">
+                        <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                            <span class="bg-white px-4 py-2 rounded-full shadow-sm text-sm font-medium text-gray-700 border border-gray-100">Dr. Hicham Charoute</span>
+                            <span class="bg-white px-4 py-2 rounded-full shadow-sm text-sm font-medium text-gray-700 border border-gray-100">Dr. Meryem Lemrani</span>
+                            <span class="bg-white px-4 py-2 rounded-full shadow-sm text-sm font-medium text-gray-700 border border-gray-100">Dr. Elmostafa Mliji</span>
+                            <span class="bg-white px-4 py-2 rounded-full shadow-sm text-sm font-medium text-gray-700 border border-gray-100">Dr. Salaheddine Redouane</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-brand-dark pt-16 pb-8 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-brand-accent rounded text-white flex items-center justify-center">
+                        <i class="fa-solid fa-dna text-sm"></i>
+                    </div>
+                    <span class="text-white font-bold text-lg">Atelier NGS 2026</span>
+                </div>
+                
+                <div class="text-gray-400 text-sm text-center">
+                    &copy; 2026 Institut Pasteur du Maroc. Tous droits réservés.
+                </div>
+                
+                <div class="flex space-x-4">
+                    <a href="https://www.linkedin.com/company/institut-pasteur-du-maroc-ipm/home/" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-linkedin text-xl"></i></a>
+                    <a href="https://www.facebook.com/Institut.Pasteur.Maroc" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-facebook text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Gestion du menu mobile
+            const btnMobile = document.getElementById('mobile-menu-button');
+            const menuMobile = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            btnMobile.addEventListener('click', () => {
+                menuMobile.classList.toggle('hidden');
+            });
+
+            // Fermer le menu mobile lors du clic sur un lien
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    menuMobile.classList.add('hidden');
+                });
+            });
+
+            // 2. Logique des accordéons
+            const accordions = document.querySelectorAll('.accordion-header');
+            
+            accordions.forEach(acc => {
+                acc.addEventListener('click', () => {
+                    const content = acc.nextElementSibling;
+                    const icon = acc.querySelector('.icon');
+                    
+                    // Fermer les autres (comportement d'accordéon strict - optionnel)
+                    // accordions.forEach(otherAcc => {
+                    //     if (otherAcc !== acc) {
+                    //         otherAcc.nextElementSibling.classList.remove('open');
+                    //         otherAcc.querySelector('.icon').classList.remove('rotate-180');
+                    //     }
+                    // });
+
+                    // Basculer l'état de l'accordéon cliqué
+                    content.classList.toggle('open');
+                    icon.classList.toggle('rotate-180');
+                    
+                    // Style conditionnel du bouton actif
+                    if(content.classList.contains('open')) {
+                        acc.classList.add('bg-gray-50');
+                    } else {
+                        acc.classList.remove('bg-gray-50');
+                    }
+                });
+            });
+
+            // Ouvrir le premier accordéon par défaut
+            if(accordions.length > 0) {
+                accordions[0].click();
+            }
+
+            // 3. Animations au défilement (Intersection Observer)
+            const faders = document.querySelectorAll('.fade-in-section');
+            
+            const appearOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Ne s'anime qu'une seule fois
+                    }
+                });
+            }, appearOptions);
+
+            faders.forEach(fader => {
+                appearOnScroll.observe(fader);
+            });
+        });
+    </script>
+</body>
+</html>
